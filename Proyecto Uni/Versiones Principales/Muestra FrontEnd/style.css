@@ -1,0 +1,382 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f7f9fc; 
+}
+
+/* --- ENCABEZADO --- */
+.main-header {
+    background-color: #009B77; 
+    color: #ffffff;
+    padding: 25px 30px;
+    display: flex;
+    text-align: right;
+    align-items: center;
+    gap: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    position: relative; 
+    z-index: 2;
+}
+
+.logo-placeholder {
+    border: 2px solid rgba(10, 151, 109, 0.6);
+    border-radius: 12px; 
+    padding: 4px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* --- BARRA DE NAVEGACIÓN --- */
+.main-nav {
+    background-color: #e7065d; 
+    padding: 15px 30px;
+    display: flex;
+    justify-content: flex-start;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.btn-login {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 8px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 6px; 
+    transition: all 0.3s ease; 
+}
+
+.btn-login:hover {
+    background-color: #ffffff;
+    color: #911b7d;
+    border-color: #ffffff;
+}
+
+/* --- CONTENIDO PRINCIPAL --- */
+.content-area {
+    padding: 60px 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.main-title {
+    color: #010d18; 
+    margin-bottom: 50px;
+    font-size: 2.2rem;
+    font-weight: 600;
+}
+
+/* --- CUADRÍCULA 2x2 --- */
+.cards-grid {
+    display: grid;
+    /* TRUCO AQUÍ: Fijamos el ancho de las tarjetas a 320px para hacerlas más delgadas */
+    grid-template-columns: repeat(2, 320px); 
+    justify-content: center; /* Centramos las tarjetas en la pantalla */
+    gap: 50px; /* Aumentamos la separación */
+}
+
+/* --- DISEÑO DE LOS CUADROS DE TEXTO (Delgados y Verticales) --- */
+.card {
+    padding: 40px 30px; 
+    min-height: 400px; /* Aumentamos la altura mínima para un aspecto más vertical */
+    text-align: left;
+    
+    border: 3px solid transparent; 
+    border-radius: 15px; 
+    background: 
+        linear-gradient(#ffffff, #ffffff) padding-box, 
+        linear-gradient(to bottom right, #D92121, #FF8C00, #F2C94C) border-box; 
+    
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); 
+}
+
+.card h3 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #D92121, #FF8C00);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.card p {
+    color: #555555;
+    line-height: 1.7; 
+    font-size: 1.05rem;
+}
+/* index.html */
+.login-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 65vh; /* Centra el cuadro verticalmente en la pantalla */
+    padding: 40px 20px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 450px; /* Un ancho ideal para un login elegante */
+    padding: 50px 40px;
+    text-align: center;
+    
+    /* Reutilizamos el truco del borde degradado elegante */
+    border: 3px solid transparent; 
+    border-radius: 15px; 
+    background: 
+        linear-gradient(#ffffff, #ffffff) padding-box, 
+        linear-gradient(to bottom right, #D92121, #FF8C00, #F2C94C) border-box; 
+    
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.login-title {
+    color: #2c3e50;
+    margin-bottom: 35px;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.input-group {
+    margin-bottom: 25px;
+    text-align: left; /* Alineamos las etiquetas a la izquierda */
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555555;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.login-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto cuando el usuario hace clic en el cuadro de texto */
+.login-input:focus {
+    outline: none;
+    border-color: #009B77; /* Se pinta del verde del header */
+    box-shadow: 0 0 5px rgba(0, 155, 119, 0.3);
+}
+
+/* --- BOTÓN ROJO-MAGENTA --- */
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background-color: #D81B60; /* Rojo-Magenta elegante */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-submit:hover {
+    background-color: #AD1457; /* Un magenta más oscuro al pasar el ratón */
+    transform: translateY(-2px); /* Se eleva un poquito */
+}
+/* --- ESTILO EXTRA PARA EL SELECTOR DE ROL --- */
+.select-rol {
+    cursor: pointer;
+    background-color: #fff;
+    appearance: none; /* Quita el estilo por defecto del navegador */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A2048' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 18px;
+    padding-right: 45px; /* Espacio para la flechita personalizada */
+}
+
+.select-rol option {
+    color: #333;
+    padding: 10px;
+}
+/* example.html */
+/* --- ESTILOS ESPECÍFICOS DEL DASHBOARD --- */
+.dashboard-body {
+    background-color: #f0f2f5;
+    overflow: hidden; /* Evita que la página entera haga scroll, solo el contenido */
+    height: 100vh;
+}
+
+/* Header simplificado */
+.dashboard-header {
+    background-color: #009B77;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.dashboard-header h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.user-welcome {
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+.user-welcome span {
+    font-weight: 600;
+    color: #f2c94c; /* Amarillo suave para resaltar el nombre */
+}
+
+/* Contenedor principal que divide Sidebar y Contenido */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 280px 1fr; /* Sidebar de 280px y el resto para contenido */
+    height: calc(100vh - 60px); /* Resto de la pantalla menos el header */
+}
+
+/* SIDEBAR ELEGANTE */
+.sidebar {
+    background-color: #2c3e50; /* Un azul-gris muy oscuro y profesional */
+    padding: 30px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.side-btn {
+    background: none;
+    border: none;
+    color: #bdc3c7;
+    padding: 15px 20px;
+    text-align: left;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.side-btn i {
+    font-size: 1.2rem;
+    width: 25px;
+}
+
+/* Botón activo o Hover */
+.side-btn:hover, .side-btn.active {
+    background-color: #34495e;
+    color: white;
+}
+
+.side-btn.active {
+    border-left: 5px solid #009B77; /* Marca el botón activo con el verde del núcleo */
+}
+
+.sidebar-divider {
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin: 20px 0;
+}
+
+/* ÁREA DE CONTENIDO */
+.dashboard-content {
+    padding: 40px;
+    overflow-y: auto; /* Permite scroll solo en el contenido */
+}
+
+.content-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.content-title {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 1.6rem;
+    border-bottom: 2px solid #f0f2f5;
+    padding-bottom: 10px;
+}
+
+/* TABLA DE INTEGRANTES */
+.members-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.members-table th {
+    text-align: left;
+    padding: 15px;
+    color: #7f8c8d;
+    font-weight: 600;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.member-row {
+    transition: background-color 0.2s;
+    position: relative;
+}
+
+.member-row td {
+    padding: 18px 15px;
+    color: #2c3e50;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+/* Efecto hover en la fila */
+.member-row:hover {
+    background-color: #f8fafc;
+    cursor: pointer;
+}
+
+/* El texto "Ver más.." que aparece al hacer hover */
+.hover-action {
+    opacity: 0;
+    color: #009B77;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: opacity 0.3s;
+    text-align: right;
+}
+
+.member-row:hover .hover-action {
+    opacity: 1;
+}
+
+.table-info {
+    margin-top: 25px;
+    font-size: 0.85rem;
+    color: #95a5a6;
+    font-style: italic;
+}

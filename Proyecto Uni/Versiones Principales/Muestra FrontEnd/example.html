@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor para Directores - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="dashboard-body">
+
+    <header class="dashboard-header">
+        <h1>Gestor de Directores</h1>
+        <div class="user-welcome">
+            Bienvenido.. <span id="userName">Prof. Yared</span>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-buttons">
+                <button class="side-btn active">
+                    <i class="fa-solid fa-users"></i> Listado de Integrantes
+                </button>
+                <button class="side-btn">
+                    <i class="fa-solid fa-file-pdf"></i> Enviar Partituras
+                </button>
+                <button class="side-btn">
+                    <i class="fa-solid fa-calendar-alt"></i> Cronograma 📅
+                </button>
+                <hr class="sidebar-divider">
+                <a href="index.html" class="side-btn">
+                    <i class="fa-solid fa-house"></i> Inicio
+                </a>
+            </div>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="content-card">
+                <h2 class="content-title">Listado de Integrantes - Coro Juvenil</h2>
+                
+                <table class="members-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre y Apellido</th>
+                            <th>Cédula</th>
+                            <th>Voz</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="member-row">
+                            <td>Andrés García</td>
+                            <td>V-28.456.789</td>
+                            <td>Tenor I</td>
+                            <td class="hover-action">Ver más..</td>
+                        </tr>
+                        <tr class="member-row">
+                            <td>Mariana López</td>
+                            <td>V-29.123.456</td>
+                            <td>Soprano II</td>
+                            <td class="hover-action">Ver más..</td>
+                        </tr>
+                        <tr class="member-row">
+                            <td>Carlos Rodríguez</td>
+                            <td>V-27.987.654</td>
+                            <td>Bajo</td>
+                            <td class="hover-action">Ver más..</td>
+                        </tr>
+                        <tr class="member-row">
+                            <td>Elena Méndez</td>
+                            <td>V-30.555.444</td>
+                            <td>Contralto</td>
+                            <td class="hover-action">Ver más..</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p class="table-info">* Pase el cursor sobre una fila para ver detalles adicionales.</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
