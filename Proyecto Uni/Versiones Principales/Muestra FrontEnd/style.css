@@ -10,7 +10,7 @@ body {
     background-color: #f7f9fc; 
 }
 
-/* --- ENCABEZADO --- */
+/* Header */
 .main-header {
     background-color: #009B77; 
     color: #ffffff;
@@ -32,7 +32,7 @@ body {
     font-weight: bold;
 }
 
-/* --- BARRA DE NAVEGACIÓN --- */
+
 .main-nav {
     background-color: #e7065d; 
     padding: 15px 30px;
@@ -60,7 +60,7 @@ body {
     border-color: #ffffff;
 }
 
-/* --- CONTENIDO PRINCIPAL --- */
+
 .content-area {
     padding: 60px 30px;
     max-width: 1100px;
@@ -75,19 +75,19 @@ body {
     font-weight: 600;
 }
 
-/* --- CUADRÍCULA 2x2 --- */
+
 .cards-grid {
     display: grid;
-    /* TRUCO AQUÍ: Fijamos el ancho de las tarjetas a 320px para hacerlas más delgadas */
+    
     grid-template-columns: repeat(2, 320px); 
-    justify-content: center; /* Centramos las tarjetas en la pantalla */
-    gap: 50px; /* Aumentamos la separación */
+    justify-content: center;
+    gap: 50px; 
 }
 
-/* --- DISEÑO DE LOS CUADROS DE TEXTO (Delgados y Verticales) --- */
+
 .card {
     padding: 40px 30px; 
-    min-height: 400px; /* Aumentamos la altura mínima para un aspecto más vertical */
+    min-height: 400px; 
     text-align: left;
     
     border: 3px solid transparent; 
