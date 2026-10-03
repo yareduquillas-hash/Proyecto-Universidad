@@ -53,6 +53,7 @@
             </article>
         </section>
 
+        <!-- INSCRIPCION PUBLICA OCULTA (pendiente de consulta):
         <section class="card" style="margin-top:24px;">
             <h3><i class="fa-solid fa-clipboard-list"></i> Inscripción pública a audiciones</h3>
             <p style="color:var(--text-muted);">Selecciona una convocatoria activa y completa tus datos. Te contactaremos.</p>
@@ -74,6 +75,7 @@
                 <button class="btn-submit" style="max-width:280px;">Enviar inscripción</button>
             </form>
         </section>
+        -->
     </main>
 
 <script>
@@ -106,7 +108,7 @@ document.getElementById('formInscripcionPublica')?.addEventListener('submit', as
         else { msg.style.color = '#c62828'; msg.textContent = dj.error || 'No se pudo inscribir.'; }
     }catch(err){ msg.style.display='block'; msg.style.color='#c62828'; msg.textContent='Error de conexión.'; }
 });
-cargarConvsPublicas();
+// cargarConvsPublicas();  // oculto junto con la seccion de inscripcion publica
 function initTheme(){
     const theme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', theme);
