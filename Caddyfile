@@ -1,0 +1,11 @@
+# Reverse proxy — punto público único (HTTP/HTTPS) hacia Gunicorn/Flask.
+#
+# Local (SITE_ADDRESS=localhost por defecto):  http://localhost
+# Producción: define SITE_ADDRESS=tudominio.example.com en .env y Caddy
+# obtiene certificado HTTPS automáticamente (Let's Encrypt).
+#
+# Flujo: Internet → Caddy (HTTPS) → app:5000 (Gunicorn) → db (PostgreSQL)
+
+{$SITE_ADDRESS:localhost} {
+	reverse_proxy app:5000
+}

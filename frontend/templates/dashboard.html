@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Núcleo Los Teques - Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css?v=18.0">
+    <link rel="stylesheet" href="/static/vendor/fontawesome/css/all.min.css">
+    <style>
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+        .badge-success { background: #e8f5e9; color: #2e7d32; }
+        .badge-danger { background: #ffebee; color: #c62828; }
+        .badge-warning { background: #fff8e1; color: #b45309; }
+        .badge-info { background: #e0f2fe; color: #0284c7; }
+        [data-theme="dark"] .badge-success { background: rgba(46, 125, 50, 0.25); color: #81c784; }
+        [data-theme="dark"] .badge-danger { background: rgba(198, 40, 40, 0.25); color: #ef9a9a; }
+        [data-theme="dark"] .badge-warning { background: rgba(245, 127, 23, 0.25); color: #fcd34d; }
+        [data-theme="dark"] .badge-info { background: rgba(2, 132, 199, 0.25); color: #7dd3fc; }
+        .tab-btn { background: none; border: none; padding: 10px 20px; font-size: 0.92rem; cursor: pointer; color: var(--text-muted); border-bottom: 3px solid transparent; font-weight: 600; transition: all 0.3s ease; position: relative; }
+        .tab-btn::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 3px; background: var(--gradient-primary); transform: scaleX(0); transition: transform 0.3s ease; }
+        .tab-btn:hover::after, .tab-btn.active::after { transform: scaleX(1); }
+        .tab-btn:hover { color: var(--text); }
+        .tab-btn.active { color: var(--primary); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-full { grid-column: span 2; }
+        .fade-enter { animation: fadeInUp 0.4s ease both; }
+        .fade-exit { animation: fadeInUp 0.3s ease reverse both; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body class="dashboard-body">
+
+<header class="dashboard-header">
+    <div style="display:flex;align-items:center;gap:10px;">
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()">&#9776;</button>
+        <h1>Núcleo Los Teques</h1>
+    </div>
+    <div class="user-welcome">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
+            <span class="theme-toggle-text" id="themeLabel">Oscuro</span>
+        </button>
+        Bienvenido/a, <span id="userName">Cargando…</span>
+        <span id="userRoleBadge" class="badge badge-info" style="margin-left:10px;"></span>
+        <a href="#" id="btnChangePass" style="color:#fff;margin-left:20px;text-decoration:none;" title="Cambiar contraseña">
+            <i class="fa-solid fa-key"></i> Clave
+        </a>
+        <a href="#" id="btnLogout" style="color:#f2c94c;margin-left:20px;text-decoration:none;">
+            <i class="fa-solid fa-right-from-bracket"></i> Salir
+        </a>
+    </div>
+</header>
+
+<div class="dashboard-container">
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="mainSidebar">
+        <div class="sidebar-buttons" id="sidebarContent"></div>
+    </aside>
+
+    <main class="dashboard-content" id="contentArea">
+        <div class="content-card">
+            <h2 class="content-title" id="contentTitle">Bienvenido</h2>
+            <div id="contentBody">
+                <p>Selecciona un módulo del menú lateral para comenzar.</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal Container -->
+<div id="modalContainer" style="display:none;"></div>
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="/static/js/common.js"></script>
+<script src="/static/js/asistencia.js"></script>
+<script src="/static/js/partituras.js"></script>
+<script src="/static/js/cronograma.js"></script>
+<script src="/static/js/audiciones.js"></script>
+<script src="/static/js/usuarios.js"></script>
+<script>
+/* Inicialización (debe ir tras cargar los módulos) */
+initTheme();
+if(checkAuth()){
+    loadSidebar().then(()=>forzarCambioClaveSiRequerido());
+}
+</script>
+</body>
+</html>

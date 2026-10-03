@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Núcleo Los Teques - Gestor de Actividades</title>
+    <link rel="stylesheet" href="/static/style.css?v=17.0">
+    <link rel="stylesheet" href="/static/vendor/fontawesome/css/all.min.css">
+</head>
+<body class="index-page">
+
+    <header class="main-header">
+        <div class="logo-placeholder">
+            <img id="img-logo" src="/static/img-logo.png" alt="Logo Núcleo Los Teques">
+        </div>
+        <h1><i class="fa-solid fa-music"></i> Núcleo Los Teques</h1>
+    </header>
+
+    <nav class="main-nav" style="display:flex;justify-content:space-between;align-items:center;">
+        <a href="/login" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión</a>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema" style="color:#fff;">
+            <i class="fa-solid fa-moon" id="themeIconIndex"></i>
+        </button>
+    </nav>
+
+    <main class="content-area">
+        <h2 class="main-title">Sistema de Gestión Integral</h2>
+        
+        <section class="cards-grid">
+            <article class="card">
+                <div style="font-size:2.5rem;margin-bottom:20px;"><i class="fa-solid fa-music" style="color:#009B77;"></i></div>
+                <h3>Música y Orden</h3>
+                <p>Herramienta tecnológica diseñada para conectar directores e integrantes. Permite subir, organizar y gestionar partituras, métodos y audios, garantizando acceso fácil y rápido para los jóvenes músicos.</p>
+            </article>
+
+            <article class="card">
+                <div style="font-size:2.5rem;margin-bottom:20px;"><i class="fa-solid fa-hand-holding-heart" style="color:#D81B60;"></i></div>
+                <h3>El Sistema</h3>
+                <p>Inspirados en la obra del Maestro José Antonio Abreu, esta plataforma apoya la misión de llegar al corazón de miles de niños y jóvenes, facilitando la organización para que el enfoque siga siendo la formación integral.</p>
+            </article>
+
+            <article class="card">
+                <div style="font-size:2.5rem;margin-bottom:20px;"><i class="fa-solid fa-people-group" style="color:#009B77;"></i></div>
+                <h3>Funcionalidad Orquestas y Coros</h3>
+                <p>Ofrece al director un listado detallado de los integrantes, herramientas para gestión del talento, asistencia y repertorio, siendo una plataforma funcional tanto para el programa coral como orquestal.</p>
+            </article>
+
+            <article class="card">
+                <div style="font-size:2.5rem;margin-bottom:20px;"><i class="fa-solid fa-chart-line" style="color:#f2c94c;"></i></div>
+                <h3>Gestión Administrativa Simplificada</h3>
+                <p>Interfaz intuitiva que garantiza navegación rápida, ayudando a planificar ensayos con mayor eficiencia. Una solución integral para dedicar más tiempo a hacer música.</p>
+            </article>
+        </section>
+
+        <section class="card" style="margin-top:24px;">
+            <h3><i class="fa-solid fa-clipboard-list"></i> Inscripción pública a audiciones</h3>
+            <p style="color:var(--text-muted);">Selecciona una convocatoria activa y completa tus datos. Te contactaremos.</p>
+            <div id="pubMsg" style="display:none;margin:10px 0;"></div>
+            <form id="formInscripcionPublica" style="display:grid;gap:10px;max-width:640px;">
+                <label>Convocatoria activa (*):<select id="pubConv" class="login-input" required><option value="">Cargando…</option></select></label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <label>Nombre (*):<input name="nombre" class="login-input" required></label>
+                    <label>Apellido (*):<input name="apellido" class="login-input" required></label>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <label>Cédula (*):<input name="cedula" class="login-input" required placeholder="V-12345678"></label>
+                    <label>Email:<input name="email" type="email" class="login-input"></label>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <label>Teléfono:<input name="telefono" class="login-input"></label>
+                    <label>Instrumento postulado:<input name="instrumento_postulado" class="login-input"></label>
+                </div>
+                <button class="btn-submit" style="max-width:280px;">Enviar inscripción</button>
+            </form>
+        </section>
+    </main>
+
+<script>
+function escConv(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(m){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+    });
+}
+async function cargarConvsPublicas(){
+    try{
+        const r = await fetch('/api/v1/audiciones/convocatorias-publicas');
+        const sel = document.getElementById('pubConv');
+        if(!r.ok){ sel.innerHTML = '<option value="">No hay convocatorias disponibles</option>'; return; }
+        const data = await r.json();
+        sel.innerHTML = data.length ? '<option value="">Selecciona</option>'+data.map(c=>`<option value="${Number(c.id)}">${escConv(c.titulo)} (${escConv(c.fecha_inicio)} al ${escConv(c.fecha_fin)})</option>`).join('')
+            : '<option value="">No hay convocatorias abiertas</option>';
+    }catch(e){
+        document.getElementById('pubConv').innerHTML = '<option value="">Error de conexión</option>';
+    }
+}
+document.getElementById('formInscripcionPublica')?.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const msg = document.getElementById('pubMsg');
+    const fd = new FormData(e.target);
+    try{
+        const r = await fetch('/api/v1/audiciones/inscribir-publico', { method:'POST', body: fd });
+        const dj = await r.json().catch(()=>({}));
+        msg.style.display = 'block';
+        if(r.ok){ msg.style.color = '#2e7d32'; msg.textContent = dj.mensaje || 'Inscripción recibida.'; e.target.reset(); }
+        else { msg.style.color = '#c62828'; msg.textContent = dj.error || 'No se pudo inscribir.'; }
+    }catch(err){ msg.style.display='block'; msg.style.color='#c62828'; msg.textContent='Error de conexión.'; }
+});
+cargarConvsPublicas();
+function initTheme(){
+    const theme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    const icon = document.getElementById('themeIconIndex');
+    if(icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+}
+function toggleTheme(){
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    const icon = document.getElementById('themeIconIndex');
+    if(icon) icon.className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+}
+initTheme();
+</script>
+</body>
+</html>

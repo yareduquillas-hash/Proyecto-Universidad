@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtualenv
+.venv/
+.venv-win/
+venv/
+env/
+
+# Base de datos
+*.db
+*.sqlite3
+
+# Uploads
+uploads/partituras/*
+uploads/videos/*
+!uploads/partituras/.gitkeep
+!uploads/videos/.gitkeep
+
+# Entorno
+.env
+.env.local
+.env.production
+
+# Flask instance (puede contener SQLite u otros datos locales, nunca commitear)
+instance/
+
+# Respaldos locales (contienen dumps de BD con datos reales, nunca commitear)
+backup/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage / tests
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Logs
+*.log
+
+# Docker
+.docker/
+
+# Migraciones (opcional — en producción se comitean)
+# migrations/versions/

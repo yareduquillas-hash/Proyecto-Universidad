@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Núcleo Los Teques - Acceso al Sistema</title>
+    <link rel="stylesheet" href="/static/style.css?v=17.0">
+    <link rel="stylesheet" href="/static/vendor/fontawesome/css/all.min.css">
+</head>
+<body class="login-page">
+
+    <header class="main-header">
+        <div class="logo-placeholder">
+            <img id="img-logo" src="/static/img-logo.png" alt="Logo Núcleo Los Teques">
+        </div>
+        <h1><i class="fa-solid fa-music"></i> Núcleo Los Teques</h1>
+    </header>
+
+    <nav class="main-nav" style="display:flex;justify-content:space-between;align-items:center;">
+        <a href="/" class="btn-login"><i class="fa-solid fa-house"></i> Inicio</a>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema" style="color:#fff;background:none;border:none;cursor:pointer;font-size:1.1rem;">
+            <i class="fa-solid fa-moon" id="themeIconLogin"></i>
+        </button>
+    </nav>
+
+    <main class="login-area">
+        <div class="login-card">
+            <div style="font-size:2.8rem;color:#009B77;margin-bottom:12px;text-align:center;">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <h2 class="login-title" style="text-align:center;margin-bottom:20px;">Acceso al Sistema</h2>
+
+            <!-- Segmented Control Tabs -->
+            <div class="login-tabs" style="display:flex;margin-bottom:24px;border-bottom:2px solid var(--border-color, #e2e8f0);gap:10px;justify-content:center;">
+                <button type="button" class="login-tab-btn active" id="tabLoginBtn" onclick="switchLoginTab('login')">
+                    <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+                </button>
+                <button type="button" class="login-tab-btn" id="tabActivateBtn" onclick="switchLoginTab('activate')">
+                    <i class="fa-solid fa-key"></i> Activar Cuenta por Cédula
+                </button>
+                <button type="button" class="login-tab-btn" id="tabForgotBtn" onclick="switchLoginTab('forgot')">
+                    <i class="fa-solid fa-rotate-left"></i> Olvidé mi clave
+                </button>
+            </div>
+
+            <!-- Tab 1: Normal Login -->
+            <div id="loginTabContent">
+                <div id="loginError" class="alert-box error" style="display:none;"></div>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="cedula"><i class="fa-solid fa-id-card"></i> Cédula de Identidad</label>
+                        <input type="text" id="cedula" class="login-input" placeholder="V-12345678" required>
+                    </div>
+                    <div class="input-group" style="position:relative;">
+                        <label for="password"><i class="fa-solid fa-lock"></i> Contraseña</label>
+                        <div style="position:relative;display:flex;align-items:center;">
+                            <input type="password" id="password" class="login-input" placeholder="••••••••" required style="width:100%;padding-right:40px;">
+                            <button type="button" onclick="togglePassVisibility('password', 'eyePass')" style="position:absolute;right:10px;background:none;border:none;cursor:pointer;color:#718096;">
+                                <i class="fa-solid fa-eye" id="eyePass"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit" style="margin-top:10px;">
+                        <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+                    </button>
+                </form>
+            </div>
+
+            <!-- Tab 2: Account Activation with Cedula & Password Verification -->
+            <div id="activateTabContent" style="display:none;">
+                <div id="activateAlert" class="alert-box" style="display:none;"></div>
+
+                <!-- Step 1: Verify Cedula -->
+                <div id="actStep1">
+                    <p style="font-size:0.9rem;color:var(--text-muted, #64748b);margin-bottom:15px;line-height:1.4;">
+                        Si fuiste pre-registrado por el Administrador o Secretaria con tu Cédula, ingresa tu Cédula a continuación para crear tu contraseña privada.
+                    </p>
+                    <div class="input-group">
+                        <label for="actCedula"><i class="fa-solid fa-id-card"></i> Ingresa tu Cédula</label>
+                        <input type="text" id="actCedula" class="login-input" placeholder="V-12345678" required>
+                    </div>
+                    <button type="button" class="btn-submit" onclick="verificarCedula()" id="btnVerificarCedula">
+                        <i class="fa-solid fa-magnifying-glass"></i> Verificar Cédula
+                    </button>
+                </div>
+
+                <!-- Step 2: Set Password with Verification -->
+                <div id="actStep2" style="display:none;">
+                    <div id="userInfoBanner" style="background:rgba(0,155,119,0.1);border-left:4px solid #009B77;padding:12px;border-radius:6px;margin-bottom:15px;font-size:0.9rem;">
+                        <i class="fa-solid fa-circle-check" style="color:#009B77;"></i> Cédula verificada: <strong id="actUserCedula">--</strong><br>
+                        <small>Escribe el email con el que te pre-registraron y crea tu contraseña.</small>
+                    </div>
+                    <form id="activateForm">
+                        <div class="input-group">
+                            <label for="actEmail"><i class="fa-solid fa-envelope"></i> Email de pre-registro</label>
+                            <input type="email" id="actEmail" class="login-input" placeholder="tu@correo.com" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="newPassword"><i class="fa-solid fa-lock"></i> Nueva Contraseña (mínimo 8 caracteres, letra y número)</label>
+                            <div style="position:relative;display:flex;align-items:center;">
+                                <input type="password" id="newPassword" class="login-input" placeholder="Crea tu contraseña" required style="width:100%;padding-right:40px;" oninput="checkPasswordMatch()">
+                                <button type="button" onclick="togglePassVisibility('newPassword', 'eyeNewPass')" style="position:absolute;right:10px;background:none;border:none;cursor:pointer;color:#718096;">
+                                    <i class="fa-solid fa-eye" id="eyeNewPass"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="confirmPassword"><i class="fa-solid fa-lock"></i> Confirmar Contraseña (Verificación)</label>
+                            <div style="position:relative;display:flex;align-items:center;">
+                                <input type="password" id="confirmPassword" class="login-input" placeholder="Vuelve a escribir la contraseña" required style="width:100%;padding-right:40px;" oninput="checkPasswordMatch()">
+                                <button type="button" onclick="togglePassVisibility('confirmPassword', 'eyeConfirmPass')" style="position:absolute;right:10px;background:none;border:none;cursor:pointer;color:#718096;">
+                                    <i class="fa-solid fa-eye" id="eyeConfirmPass"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="passMatchIndicator" style="font-size:0.85rem;margin-bottom:15px;display:none;"></div>
+
+                        <button type="submit" class="btn-submit" id="btnActivarCuenta">
+                            <i class="fa-solid fa-check-double"></i> Registrar Contraseña y Entrar
+                        </button>
+
+                        <button type="button" class="btn-login" onclick="resetActivateSteps()" style="margin-top:10px;width:100%;background:transparent;color:#718096;border:1px solid #cbd5e1;">
+                            <i class="fa-solid fa-arrow-left"></i> Verificar otra cédula
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        <!-- Tab 3: Recuperación de contraseña -->
+        <div id="forgotTabContent" style="display:none;">
+            <div id="forgotAlert" class="alert-box" style="display:none;"></div>
+            <div id="forgotStep1">
+                <p style="font-size:0.9rem;color:var(--text-muted, #64748b);margin-bottom:15px;line-height:1.4;">
+                    Ingresa tu cédula o email y te enviaremos un código de 6 dígitos a tu Gmail (vence en 15 minutos).
+                </p>
+                <div class="input-group">
+                    <label for="forgotLogin"><i class="fa-solid fa-id-card"></i> Cédula o email</label>
+                    <input type="text" id="forgotLogin" class="login-input" placeholder="V-12345678 o tu@correo.com" required>
+                </div>
+                <button type="button" class="btn-submit" onclick="solicitarCodigo()" id="btnSolicitarCodigo">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar código
+                </button>
+            </div>
+            <div id="forgotStep2" style="display:none;">
+                <p style="font-size:0.9rem;color:var(--text-muted, #64748b);margin-bottom:15px;">
+                    Revisa tu Gmail e ingresa el código junto con tu nueva contraseña.
+                </p>
+                <div class="input-group">
+                    <label for="forgotCode"><i class="fa-solid fa-key"></i> Código de 6 dígitos</label>
+                    <input type="text" id="forgotCode" class="login-input" placeholder="123456" maxlength="6" inputmode="numeric" required>
+                </div>
+                <div class="input-group">
+                    <label for="forgotPass1"><i class="fa-solid fa-lock"></i> Nueva contraseña (mín 8, letra y número)</label>
+                    <input type="password" id="forgotPass1" class="login-input" placeholder="••••••••" required>
+                </div>
+                <div class="input-group">
+                    <label for="forgotPass2"><i class="fa-solid fa-lock"></i> Confirmar nueva contraseña</label>
+                    <input type="password" id="forgotPass2" class="login-input" placeholder="••••••••" required>
+                </div>
+                <button type="button" class="btn-submit" onclick="restablecerClave()" id="btnRestablecer">
+                    <i class="fa-solid fa-check-double"></i> Cambiar contraseña
+                </button>
+            </div>
+        </div>
+
+            <p style="margin-top:24px;font-size:0.8rem;color:#95a5a6;text-align:center;">
+                <i class="fa-solid fa-shield-halved"></i> Plataforma Oficial · Núcleo Los Teques
+            </p>
+        </div>
+    </main>
+
+    <script>
+        function switchLoginTab(tab){
+            const btnLog = document.getElementById('tabLoginBtn');
+            const btnAct = document.getElementById('tabActivateBtn');
+            const btnFor = document.getElementById('tabForgotBtn');
+            const contentLog = document.getElementById('loginTabContent');
+            const contentAct = document.getElementById('activateTabContent');
+            const contentFor = document.getElementById('forgotTabContent');
+
+            btnLog.classList.remove('active');
+            btnAct.classList.remove('active');
+            if(btnFor) btnFor.classList.remove('active');
+            contentLog.style.display = 'none';
+            contentAct.style.display = 'none';
+            if(contentFor) contentFor.style.display = 'none';
+
+            if(tab === 'login'){
+                btnLog.classList.add('active');
+                contentLog.style.display = 'block';
+            } else if(tab === 'activate'){
+                btnAct.classList.add('active');
+                contentAct.style.display = 'block';
+            } else {
+                if(btnFor) btnFor.classList.add('active');
+                if(contentFor) contentFor.style.display = 'block';
+            }
+        }
+
+        function saveSession(data){
+            localStorage.removeItem('alumnoId');
+            localStorage.setItem('token', data.access_token);
+            if(data.refresh_token) localStorage.setItem('refresh_token', data.refresh_token);
+            localStorage.setItem('role', data.role);
+            localStorage.setItem('nombre', data.nombre);
+            localStorage.setItem('userId', data.id);
+        }
+
+        function togglePassVisibility(inputId, eyeId){
+            const inp = document.getElementById(inputId);
+            const eye = document.getElementById(eyeId);
+            if(inp.type === 'password'){
+                inp.type = 'text';
+                eye.className = 'fa-solid fa-eye-slash';
+            } else {
+                inp.type = 'password';
+                eye.className = 'fa-solid fa-eye';
+            }
+        }
+
+        // Standard Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Ingresando…';
+            const cedula = document.getElementById('cedula').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorEl = document.getElementById('loginError');
+
+            try {
+                const res = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cedula, password })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    errorEl.style.display = 'block';
+                    errorEl.className = 'alert-box error';
+                    errorEl.textContent = data.error || 'Error al iniciar sesión';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Ingresar';
+                    if(data.requiere_activacion){
+                        document.getElementById('actCedula').value = data.cedula || cedula;
+                        setTimeout(() => {
+                            switchLoginTab('activate');
+                            verificarCedula();
+                        }, 1800);
+                    }
+                    return;
+                }
+                errorEl.style.display = 'none';
+                saveSession(data);
+                if(data.requiere_cambio_clave){
+                    errorEl.style.display = 'block';
+                    errorEl.className = 'alert-box warning';
+                    errorEl.textContent = 'Debes cambiar tu contraseña temporal. Contáctanos si necesitas ayuda.';
+                }
+                window.location.href = '/dashboard';
+            } catch (err) {
+                errorEl.style.display = 'block';
+                errorEl.className = 'alert-box error';
+                errorEl.textContent = 'Error de conexión. Verifica tu red.';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Ingresar';
+            }
+        });
+
+        // Step 1: Verify Cedula
+        async function verificarCedula(){
+            const cedula = document.getElementById('actCedula').value.trim();
+            const alertEl = document.getElementById('activateAlert');
+            const btn = document.getElementById('btnVerificarCedula');
+
+            if(!cedula){
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box warning';
+                alertEl.textContent = 'Por favor ingresa tu número de cédula.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando…';
+
+            try {
+                const res = await fetch('/api/v1/auth/verificar-cedula', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ cedula })
+                });
+                const data = await res.json();
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Verificar Cédula';
+
+                if(!res.ok){
+                    alertEl.style.display = 'block';
+                    alertEl.className = 'alert-box error';
+                    alertEl.textContent = data.mensaje || data.error || 'La cédula no fue encontrada.';
+                    return;
+                }
+
+                if(data.status === 'no_encontrado'){
+                    alertEl.style.display = 'block';
+                    alertEl.className = 'alert-box error';
+                    alertEl.textContent = data.mensaje || 'La cédula no fue encontrada.';
+                    return;
+                }
+
+                if(data.status === 'activo'){
+                    alertEl.style.display = 'block';
+                    alertEl.className = 'alert-box info';
+                    alertEl.textContent = data.mensaje;
+                    document.getElementById('cedula').value = cedula;
+                    setTimeout(() => switchLoginTab('login'), 2000);
+                    return;
+                }
+
+                if(data.status === 'requiere_activacion'){
+                    alertEl.style.display = 'none';
+                    // Anti-enumeración: el backend ya no devuelve nombre/apellido
+                    document.getElementById('actUserCedula').textContent = cedula;
+                    document.getElementById('actStep1').style.display = 'none';
+                    document.getElementById('actStep2').style.display = 'block';
+                }
+            } catch(e) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Verificar Cédula';
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box error';
+                alertEl.textContent = 'Error de comunicación con el servidor.';
+            }
+        }
+
+        // Live Password Match Check
+        function checkPasswordMatch(){
+            const p1 = document.getElementById('newPassword').value;
+            const p2 = document.getElementById('confirmPassword').value;
+            const indicator = document.getElementById('passMatchIndicator');
+
+            if(!p1 && !p2){
+                indicator.style.display = 'none';
+                return;
+            }
+
+            indicator.style.display = 'block';
+
+            if(p1.length < 8){
+                indicator.style.color = '#e53e3e';
+                indicator.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> La contraseña debe tener al menos 8 caracteres, una letra y un número';
+                return;
+            }
+
+            if(p1 === p2){
+                indicator.style.color = '#2e7d32';
+                indicator.innerHTML = '<i class="fa-solid fa-circle-check"></i> Las contraseñas coinciden perfectamente';
+            } else {
+                indicator.style.color = '#e53e3e';
+                indicator.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Las contraseñas no coinciden';
+            }
+        }
+
+        // Step 2: Save Password
+        document.getElementById('activateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const cedula = document.getElementById('actCedula').value.trim();
+            const email = document.getElementById('actEmail').value.trim();
+            const password = document.getElementById('newPassword').value;
+            const confirm_password = document.getElementById('confirmPassword').value;
+            const alertEl = document.getElementById('activateAlert');
+            const btn = document.getElementById('btnActivarCuenta');
+
+            if(!email){
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box error';
+                alertEl.textContent = 'Escribe el email con el que te pre-registraron.';
+                return;
+            }
+            if(password !== confirm_password){
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box error';
+                alertEl.textContent = 'Las contraseñas no coinciden. Por favor verifíquelas.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando contraseña…';
+
+            try {
+                const res = await fetch('/api/v1/auth/activar-cuenta', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ cedula, email, password, confirm_password })
+                });
+                const data = await res.json();
+                if(!res.ok){
+                    alertEl.style.display = 'block';
+                    alertEl.className = 'alert-box error';
+                    alertEl.textContent = data.error || 'Error al activar la cuenta';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Registrar Contraseña y Entrar';
+                    return;
+                }
+
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box success';
+                alertEl.textContent = data.mensaje || '¡Contraseña configurada con éxito!';
+
+                localStorage.setItem('token', data.access_token);
+                if(data.refresh_token) localStorage.setItem('refresh_token', data.refresh_token);
+                localStorage.setItem('role', data.role);
+                localStorage.setItem('nombre', data.nombre);
+                localStorage.setItem('userId', data.id);
+
+                setTimeout(() => window.location.href = '/dashboard', 1200);
+            } catch(err){
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box error';
+                alertEl.textContent = 'Error de conexión con el servidor.';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Registrar Contraseña y Entrar';
+            }
+        });
+
+        function resetActivateSteps(){
+            document.getElementById('actStep1').style.display = 'block';
+            document.getElementById('actStep2').style.display = 'none';
+            document.getElementById('activateAlert').style.display = 'none';
+            document.getElementById('actCedula').value = '';
+            document.getElementById('actEmail').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('passMatchIndicator').style.display = 'none';
+        }
+
+        // Recuperación: paso 1 solicita código al Gmail
+        async function solicitarCodigo(){
+            const login = document.getElementById('forgotLogin').value.trim();
+            const alertEl = document.getElementById('forgotAlert');
+            const btn = document.getElementById('btnSolicitarCodigo');
+            if(!login){
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box warning';
+                alertEl.textContent = 'Ingresa tu cédula o email.';
+                return;
+            }
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando…';
+            try {
+                const isEmail = login.includes('@');
+                const res = await fetch('/api/v1/auth/forgot', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(isEmail ? { email: login } : { cedula: login })
+                });
+                const data = await res.json();
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box success';
+                alertEl.textContent = data.mensaje || 'Revisa tu Gmail.';
+                document.getElementById('forgotStep1').style.display = 'none';
+                document.getElementById('forgotStep2').style.display = 'block';
+            } catch(e){
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box error';
+                alertEl.textContent = 'Error de conexión con el servidor.';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar código';
+            }
+        }
+
+        // Recuperación: paso 2 verifica código y cambia clave
+        async function restablecerClave(){
+            const login = document.getElementById('forgotLogin').value.trim();
+            const codigo = document.getElementById('forgotCode').value.trim();
+            const p1 = document.getElementById('forgotPass1').value;
+            const p2 = document.getElementById('forgotPass2').value;
+            const alertEl = document.getElementById('forgotAlert');
+            const btn = document.getElementById('btnRestablecer');
+            if(!codigo || !p1 || !p2){
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box warning';
+                alertEl.textContent = 'Completa código y ambas contraseñas.';
+                return;
+            }
+            if(p1 !== p2){
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box error';
+                alertEl.textContent = 'Las contraseñas no coinciden.';
+                return;
+            }
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando…';
+            try {
+                const isEmail = login.includes('@');
+                const base = isEmail ? { email: login } : { cedula: login };
+                const res = await fetch('/api/v1/auth/reset', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ ...base, codigo, password: p1, confirm_password: p2 })
+                });
+                const data = await res.json();
+                if(!res.ok){
+                    alertEl.style.display = 'block';
+                    alertEl.className = 'alert-box error';
+                    alertEl.textContent = data.error || 'Código inválido o vencido.';
+                    return;
+                }
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box success';
+                alertEl.textContent = data.mensaje + ' Ya puedes iniciar sesión.';
+                setTimeout(() => switchLoginTab('login'), 2000);
+            } catch(e){
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert-box error';
+                alertEl.textContent = 'Error de conexión con el servidor.';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Cambiar contraseña';
+            }
+        }
+
+        function initTheme(){
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            const icon = document.getElementById('themeIconLogin');
+            if(icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+
+        function toggleTheme(){
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            const icon = document.getElementById('themeIconLogin');
+            if(icon) icon.className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+
+        initTheme();
+    </script>
+</body>
+</html>

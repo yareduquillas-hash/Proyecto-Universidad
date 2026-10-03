@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    # Obligatorio en .env (igual que SECRET_KEY): sin contraseña fuerte no levanta.
+    # Si cambias POSTGRES_PASSWORD, define también DATABASE_URL con la misma clave.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nucleo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD en .env}
+      POSTGRES_DB: ${POSTGRES_DB:-nucleo}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # No expongas el puerto 5432 al exterior; solo la red interna de compose.
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      FLASK_ENV: production
+      PORT: 5000
+      DATABASE_URL: ${DATABASE_URL:-postgresql://nucleo:${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD en .env}@db:5432/nucleo}
+      SECRET_KEY: ${SECRET_KEY:?Configura SECRET_KEY en .env}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Configura JWT_SECRET_KEY en .env}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost}
+    env_file:
+      - .env
+    # Gunicorn/Flask NO se publica en el host: solo lo consume Caddy (proxy).
+    expose:
+      - "5000"
+    volumes:
+      - ./uploads:/app/uploads
+
+  # Reverse proxy: punto público único. HTTP→HTTPS automático si SITE_ADDRESS
+  # es un dominio (Let's Encrypt). En local, SITE_ADDRESS=localhost → http://localhost.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
